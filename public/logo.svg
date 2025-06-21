@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 1024 1024">
+  <!-- Circular purple background -->
+  <circle cx="512" cy="512" r="512" fill="#8e51ff"/>
+
+  <!-- White speech bubble -->
+  <rect x="176" y="280" width="672" height="448" rx="64" ry="64" fill="#FFFFFF"/>
+  <!-- Tail of the bubble -->
+  <polygon points="640,728 640,584 768,584" fill="#FFFFFF"/>
+
+  <!-- "311" text -->
+  <text x="512" y="580"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="280"
+        font-weight="bold"
+        fill="#8e51ff">
+    311
+  </text>
+</svg>
