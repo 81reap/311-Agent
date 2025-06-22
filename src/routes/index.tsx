@@ -42,7 +42,7 @@ function Index() {
 
     // If there's a photo, query the AI with the structured prompt
     if (capturedPhoto) {
-      const structuredPrompt = `classifyImageClaim = (image): "decay_sidewalk" | "overflow_trash" | "rodents" | "illegal_parking" | none`;
+      const structuredPrompt = `what 311 claim does this image depict? "decay_sidewalk", "overflow_trash", "rodents", "illegal_parking", or none`;
       console.log("Structured Prompt:", structuredPrompt);
       query({
         imageUrl: capturedPhoto,
