@@ -1,8 +1,9 @@
 import reactLogo from "./assets/react.svg";
 import appLogo from "/logo.svg";
 import PWABadge from "./PWABadge.tsx";
-import "./App.css";
 import { useMoondream } from "./hooks/moondream.ts";
+import { Header } from "./components/header.tsx";
+import OfflineAlert from "./components/alerts/offline.tsx";
 
 function App() {
   const { query, response, pipelineStatus, error } = useMoondream();
@@ -34,6 +35,10 @@ function App() {
 
   return (
     <>
+      <div >
+        <Header />
+        <OfflineAlert />
+      </div>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={appLogo} className="logo" alt="311 Agent logo" />
