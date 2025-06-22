@@ -4,6 +4,7 @@ import "./style.css";
 import { MoondreamProvider } from "./providers/moondream.tsx";
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
+import { ChatProvider } from "./providers/chat.tsx";
 
 const router = createRouter({ routeTree, basepath: '/311-Agent/' });
 // Register the router instance for type safety
@@ -16,7 +17,9 @@ declare module '@tanstack/react-router' {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MoondreamProvider>
-      <RouterProvider router={router} />
+      <ChatProvider>
+        <RouterProvider router={router} />
+      </ChatProvider>
     </MoondreamProvider>
   </StrictMode>,
 );
