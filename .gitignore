@@ -12,6 +12,8 @@ dist
 dist-ssr
 dev-dist
 *.local
+.tanstack
+*.gen.ts
 
 # Editor directories and files
 .vscode/*
