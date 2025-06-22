@@ -1,5 +1,5 @@
 import { useNetworkState } from "@uidotdev/usehooks";
-import { AlertCircle } from "lucide-react";
+import { CloudAlert } from "lucide-react";
 
 export default function OfflineAlert() {
   const network = useNetworkState();
@@ -7,7 +7,7 @@ export default function OfflineAlert() {
 
   return (
     <div role="alert" className="alert alert-warning m-2">
-      <AlertCircle />
+      <CloudAlert />
       <span>You're offline. Reports will be sent when you reconnect.</span>
     </div> 
   );

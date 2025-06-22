@@ -6,6 +6,7 @@ import OfflineAlert from '../components/alerts/offline.tsx'
 import { useEffect } from 'react'
 import { useChat } from '../hooks/chat.ts'
 import { useMoondream } from '../hooks/moondream.ts'
+import CacheFixAlert from '../components/alerts/cacheFix.tsx'
 
 function Root() {
   const { addMessage, setIsLoading } = useChat();
@@ -32,6 +33,7 @@ function Root() {
       <Header />
       <PWAToast />
       <OfflineAlert />
+      <CacheFixAlert />
       <Outlet />
       <TanStackRouterDevtools />
     </>
