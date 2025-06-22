@@ -1,6 +1,6 @@
 import reactLogo from "./assets/react.svg";
 import appLogo from "/logo.svg";
-import PWABadge from "./PWABadge.tsx";
+import PWAToast from "./components/toasts/pwa.tsx";
 import { useMoondream } from "./hooks/moondream.ts";
 import { Header } from "./components/header.tsx";
 import OfflineAlert from "./components/alerts/offline.tsx";
@@ -37,6 +37,7 @@ function App() {
     <>
       <div >
         <Header />
+        <PWAToast />
         <OfflineAlert />
       </div>
       <div>
@@ -69,7 +70,6 @@ function App() {
           </>
         )}
       </div>
-      <PWABadge />
     </>
   );
 }
