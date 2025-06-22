@@ -1,7 +1,8 @@
+import { useNetworkState } from "@uidotdev/usehooks";
 import { MapPin, Wifi, WifiOff } from "lucide-react";
 
 export function Header() {
-  const isOnline = false; // Replace with actual online status logic
+  const network = useNetworkState();
 
   return (
     <header className="navbar bg-base-200 shadow-sm">
@@ -22,7 +23,7 @@ export function Header() {
             <span>NYC</span>
           </div>
           <div role="button" className="btn btn-primary btn-square">
-            {isOnline ? (
+            {network.online ? (
               <Wifi className="text-success" />
             ) : (
               <WifiOff className="text-error" />
