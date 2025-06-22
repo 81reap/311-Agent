@@ -20,11 +20,10 @@ function Index() {
   const navigate = useNavigate({ from: "/" });
   const { addMessage, clearMessages } = useChat();
   const { query, pipelineStatus } = useMoondream();
-  const [inputText, setInputText] = useState("");
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
   const startReport = () => {
-    if (!inputText.trim() && !capturedPhoto) {
+    if (!capturedPhoto) {
       return; // Prevent empty reports
     }
 
@@ -37,25 +36,22 @@ function Index() {
     if (capturedPhoto) {
       userMessage.content.push({ type: "image", url: capturedPhoto });
     }
-    if (inputText.trim()) {
-      userMessage.content.push({ type: "text", text: inputText.trim() });
-    }
 
     clearMessages();
     addMessage(userMessage);
 
-    // If there's a photo, query the AI
+    // If there's a photo, query the AI with the structured prompt
     if (capturedPhoto) {
-      const prompt =
-        inputText.trim() || "Describe this image for a 311 report.";
+      const structuredPrompt = `classifyImageClaim = (image): "decay_sidewalk" | "overflow_trash" | "rodents" | "illegal_parking" | none`;
+      console.log("Structured Prompt:", structuredPrompt);
       query({
         imageUrl: capturedPhoto,
-        prompt: prompt,
+        prompt: structuredPrompt,
       });
-    }
 
-    // Navigate to the chat view
-    navigate({ to: "/chat" });
+      // Navigate to the chat view
+      navigate({ to: "/chat" });
+    }
   };
 
   return (
@@ -69,24 +65,9 @@ function Index() {
           capturedPhoto={capturedPhoto}
           setCapturedPhoto={setCapturedPhoto}
         />
-        <textarea
-          placeholder="Describe the issue..."
-          className="textarea textarea-bordered w-full text-base min-h-24 mb-4"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              if (inputText.trim() || capturedPhoto) startReport();
-            }
-          }}
-        />
         <button
           onClick={startReport}
-          disabled={
-            (!inputText.trim() && !capturedPhoto) ||
-            pipelineStatus === "working"
-          }
+          disabled={!capturedPhoto || pipelineStatus === "working"}
           className="btn btn-primary w-full"
         >
           {pipelineStatus === "working" ? (
