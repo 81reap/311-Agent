@@ -23,6 +23,8 @@
 
 This project runs a powerful multi-modal vision model (`Moondream2`) directly in the user's browser, ensuring privacy and a fast, seamless experience without any server-side processing for the AI analysis.
 
+This project was initiated as a submission for the [**NYC Open-Source Computer Vision Hackathon**](https://nyc.aitinkerers.org/p/open-source-nyc-computer-vision-hackathon), presented by AI Tinkerers and sponsored by Moondream, hosted at Betaworks on June 21-22, 2025.
+
 ## ✨ Key Features
 
 *   **📸 AI-Powered Image Analysis**: Uses the `Moondream2` model via `Transformers.js` to analyze user-submitted photos and identify the type of 311 complaint.
@@ -49,9 +51,9 @@ The project is built with a modern, robust set of technologies:
 This repository is structured as a monorepo:
 ```
 311 Agent/
-├── pwa/              # The React-based Progressive Web App
-├── notebooks/        # (TODO) Jupyter notebooks for model experimentation
-├── dataset/          # (TODO) Image dataset for training/fine-tuning
+├── pwa/              # The React-based Progressive Web App frontend
+├── notebooks/        # Jupyter notebooks for model experimentation and fine-tuning, e.g., finetuning.ipynb for Moondream2.
+├── dataset/          # Image datasets (e.g., Excel files) for training/fine-tuning the AI model.
 └── README.md         # You are here
 ```
 
@@ -63,7 +65,12 @@ To get the web application running locally, please refer to the specific instruc
 
 ## 📊 Data & Model Training
 
-*TODO: This section will be updated with details about the dataset and the Python notebooks used for model evaluation and potential fine-tuning. It will include instructions on how to set up the environment and run the notebooks.*
+This project includes a `dataset/` directory and `notebooks/` for data management and AI model training/fine-tuning.
+
+*   **Dataset (`dataset/`)**: This directory contains sample datasets, currently in `.xlsx` format, representing various 311 complaint categories. These datasets are intended for use in training and evaluating the multi-modal vision model. Examples include "NO STANDING-BUS LANE_image.xlsx", "Overflowing Trash Bins.xlsx", "SIDEWORK ISSUE.xlsx", and "mice.xlsx".
+*   **Notebooks (`notebooks/`)**: The `finetuning.ipynb` Jupyter notebook demonstrates the process of fine-tuning the `Moondream2` multi-modal vision model using data from platforms like Roboflow. It showcases the setup of the training environment, data loading from COCO segmentation format, dataset preparation, and the initial steps for model configuration and training using the Hugging Face `transformers` library. This notebook aims to adapt `Moondream2` to better recognize and categorize specific 311-related visual issues.
+
+To set up the environment and run the notebooks, navigate to the `notebooks` directory and follow the instructions within `finetuning.ipynb` (e.g., installing dependencies like `torch`, `transformers`, `roboflow`, etc.). The notebook also demonstrates integration with Google Colab secrets for Roboflow API keys.
 
 ## 🔮 Future Improvements
 
