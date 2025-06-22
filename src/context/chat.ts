@@ -22,6 +22,7 @@ export interface Message {
 export interface ChatContextState {
   messages: Message[];
   addMessage: (message: Message) => void;
+  clearMessages: () => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }

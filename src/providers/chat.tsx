@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useCallback, useState } from "react";
 import {
   ChatContext,
   Message,
@@ -29,16 +29,20 @@ const mockMessages: Message[] = [
 ];
 
 export function ChatProvider({ children }: PropsWithChildren) {
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const addMessage = (message: Message) => {
+  const addMessage = useCallback((message: Message) => {
     setMessages((prevMessages) => [...prevMessages, message]);
-  };
+  }, []);
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+  }, []);
 
   const value = {
     messages,
     addMessage,
+    clearMessages,
     isLoading,
     setIsLoading,
   };

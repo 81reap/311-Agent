@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PhotoDrop } from "../components/photoDrop";
+import { useChat } from "../hooks/chat";
+import { Message } from "../context/chat";
+import { useMoondream } from "../hooks/moondream";
 
 // todo :: remove this mock data and replace with real data from the 311 API
 const quickActions = [
@@ -14,25 +17,83 @@ const quickActions = [
 export type QuickActions = typeof quickActions;
 
 function Index() {
+  const navigate = useNavigate({ from: "/" });
+  const { addMessage, clearMessages } = useChat();
+  const { query, pipelineStatus } = useMoondream();
   const [inputText, setInputText] = useState("");
-  const sendMessage = () => {};
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+
+  const startReport = () => {
+    if (!inputText.trim() && !capturedPhoto) {
+      return; // Prevent empty reports
+    }
+
+    const userMessage: Message = {
+      role: "user",
+      content: [],
+      timestamp: new Date(),
+    };
+
+    if (capturedPhoto) {
+      userMessage.content.push({ type: "image", url: capturedPhoto });
+    }
+    if (inputText.trim()) {
+      userMessage.content.push({ type: "text", text: inputText.trim() });
+    }
+
+    clearMessages();
+    addMessage(userMessage);
+
+    // If there's a photo, query the AI
+    if (capturedPhoto) {
+      const prompt =
+        inputText.trim() || "Describe this image for a 311 report.";
+      query({
+        imageUrl: capturedPhoto,
+        prompt: prompt,
+      });
+    }
+
+    // Navigate to the chat view
+    navigate({ to: "/chat" });
+  };
 
   return (
-    <div className="p-4 space-y-6"> 
+    <div className="p-4 space-y-6">
       {/* 311 Complaint Input Form */}
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-m p-4">
         <legend className="fieldset-legend text-2xl font-semibold">
           Quick Report
         </legend>
-        <PhotoDrop />
-        <textarea placeholder="Describe the issue..."
-          className="input input-bordered w-full text-base min-h-24"
+        <PhotoDrop
+          capturedPhoto={capturedPhoto}
+          setCapturedPhoto={setCapturedPhoto}
+        />
+        <textarea
+          placeholder="Describe the issue..."
+          className="textarea textarea-bordered w-full text-base min-h-24 mb-4"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && inputText.trim() && sendMessage()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (inputText.trim() || capturedPhoto) startReport();
+            }
+          }}
         />
-        <button onClick={sendMessage} disabled={inputText.trim().length == 0} className="btn btn-primary w-full">
-          Start Report
+        <button
+          onClick={startReport}
+          disabled={
+            (!inputText.trim() && !capturedPhoto) ||
+            pipelineStatus === "working"
+          }
+          className="btn btn-primary w-full"
+        >
+          {pipelineStatus === "working" ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            "Start Report"
+          )}
         </button>
       </fieldset>
 
@@ -60,5 +121,4 @@ function Index() {
 
 export const Route = createFileRoute("/")({
   component: Index,
-  
-})
+});
