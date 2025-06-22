@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, Check, Send, X } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useChat } from "../hooks/chat";
-import { Message } from "../context/chat";
+import { ImageContent, Message } from "../context/chat";
 import MessageBubble from "../components/messageBubble";
+import { useMoondream } from "../hooks/moondream";
 
 function ChatView() {
   const { messages, addMessage, isLoading, setIsLoading } = useChat();
+  const { query } = useMoondream();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [inputText, setInputText] = useState("");
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
@@ -15,8 +17,6 @@ function ChatView() {
     if (!inputText.trim() && !capturedPhoto) {
       return; // Prevent sending empty messages
     }
-
-    setIsLoading(true);
 
     const newUserMessage: Message = {
       role: "user",
@@ -32,24 +32,54 @@ function ChatView() {
     }
 
     addMessage(newUserMessage);
+
+    // Determine the image to use for the AI query. Use the new photo if it
+    // exists, otherwise find the last image sent by the user.
+    let imageUrl: string | null | undefined = capturedPhoto;
+    if (!imageUrl) {
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === "user") {
+          const imageContent = messages[i].content.find(
+            (c) => c.type === "image",
+          ) as ImageContent | undefined;
+          if (imageContent) {
+            imageUrl = imageContent.url;
+            break;
+          }
+        }
+      }
+    }
+
+    // If an image is available, query the AI model.
+    if (imageUrl) {
+      const prompt =
+        inputText.trim() || "Describe this image for a 311 report.";
+      query({
+        imageUrl: imageUrl,
+        prompt: prompt,
+      });
+    } else {
+      // If no image is available, the vision model can't respond.
+      // Provide a canned response.
+      setIsLoading(true);
+      setTimeout(() => {
+        const aiResponse: Message = {
+          role: "system",
+          content: [
+            {
+              type: "text",
+              text: "I am a visual assistant. Please upload an image so I can help you with your 311 report.",
+            },
+          ],
+          timestamp: new Date(),
+        };
+        addMessage(aiResponse);
+        setIsLoading(false);
+      }, 1000);
+    }
+
     setInputText("");
     setCapturedPhoto(null);
-
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse: Message = {
-        role: "system",
-        content: [
-          {
-            type: "text",
-            text: "Aye, understood! I shall relay yer message to the high seas command!",
-          },
-        ],
-        timestamp: new Date(),
-      };
-      addMessage(aiResponse);
-      setIsLoading(false);
-    }, 1500); // Simulate network delay
   };
 
   const submitReport = () => {
