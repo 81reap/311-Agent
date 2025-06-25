@@ -43,6 +43,14 @@ jobs:
         # The 'base' in vite.config.ts is correctly set to '/311-Agent/'.
         # 'base' is not needed if using 'working-directory' in the step.
         run: bun run build
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './pwa/dist'
 
   Continous-Deployment:
     environment:
@@ -54,15 +62,6 @@ jobs:
         working-directory: pwa
     needs: Continous-Integration
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload the 'dist' directory
-          path: './pwa/dist'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
